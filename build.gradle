@@ -3,18 +3,6 @@ apply plugin: 'eclipse'
 apply plugin: 'maven'
 apply plugin: 'signing'
 
-buildscript {
-    repositories {
-        mavenCentral()
-    }
-    dependencies {
-        classpath 'net.nisgits.gradle:gradle-executable-jar-plugin:1.7.0'
-    }
-}
-
-ext.mainClass = 'org.cinchapi.stalk.Stalk'
-
-
 repositories {
    mavenCentral()
 }

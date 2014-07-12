@@ -55,17 +55,6 @@ public class JarshPlugin implements Plugin<Project> {
     public void apply(Project project) {
         project.getPlugins().apply(ExecutableJarPlugin.class);
 
-        // Configure additional project dependency.
-        project.getConfigurations()
-                .create("jarsh")
-                .setTransitive(false)
-                .setVisible(false)
-                .setDescription(
-                        "The gradle-executable-jar library to use for this project");
-
-        // Add executable-jar plugin dependency to the project
-        project.getDependencies().module(null); //FIXME
-
         Task task = project.task(JARSH_TASK_NAME);
 
         // Define the task metadata

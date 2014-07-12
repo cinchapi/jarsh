@@ -1,4 +1,6 @@
 #!/bin/sh
+
+# Props to https://coderwall.com/p/ssuaxa
 MYSELF=`which "$0" 2>/dev/null`
 [ $? -gt 0 -a -f "$0" ] && MYSELF="./$0"
 java=java

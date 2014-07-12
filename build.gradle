@@ -32,3 +32,6 @@ artifacts {
     archives javadocJar
 }
 
+group = 'org.cinchapi'
+version = 0.1
+

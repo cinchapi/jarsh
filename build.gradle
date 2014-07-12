@@ -35,3 +35,61 @@ artifacts {
 group = 'org.cinchapi'
 version = 0.1
 
+signing {
+    required { gradle.taskGraph.hasTask("uploadArchives") }
+    sign configurations.archives
+}
+
+def getMaven = { ->
+    def stdout = new ByteArrayOutputStream()
+    exec {
+        commandLine 'cat', '.maven'
+        standardOutput = stdout
+    }
+    return stdout.toString().trim()
+}
+
+project.ext.maven = getMaven()
+
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+
+            repository(url: project.maven) {
+              authentication(userName: sonatypeUsername, password: sonatypePassword)
+            }
+
+            pom.version = '0.1'
+
+            pom.project {
+               name 'Jarsh'
+               packaging 'jar'
+               description 'A gradle plugin that generates an executable shell script that embeds a runnable application jar with all of its dependencies.'
+               url 'http://cinchapi.org/jarsh'
+
+               scm {
+                   url 'git@github.com:cinchapi/jarsh.git'
+                   connection 'git@github.com:cinchapi/jarsh.git'
+                   developerConnection 'git@github.com:cinchapi/jarsh.git'
+               }
+
+               licenses {
+                   license {
+                       name 'The MIT License'
+                       url 'http://opensource.org/licenses/MIT'
+                       distribution 'repo'
+                   }
+               }
+
+               developers {
+                   developer {
+                       id 'jnelson'
+                       name 'Jeff Nelson'
+                   }
+               }
+           }
+        }
+    }
+}
+

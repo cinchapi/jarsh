@@ -1,95 +1,42 @@
+buildscript {
+  repositories {
+    maven {
+      url "https://plugins.gradle.org/m2/"
+    }
+  }
+  dependencies {
+    classpath "com.gradle.publish:plugin-publish-plugin:0.9.1"
+  }
+}
+
 apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'maven'
 apply plugin: 'signing'
+apply plugin: "com.gradle.plugin-publish"
 
 repositories {
-   mavenCentral()
+   jcenter()
 }
 
 dependencies {
     compile gradleApi()
-    compile "org.codehaus.groovy:groovy-all:1.8.6"
+    compile localGroovy()
     compile 'net.nisgits.gradle:gradle-executable-jar-plugin:1.7.0'
 }
 
-task wrapper(type: Wrapper) {
-    gradleVersion = '1.8'
-}
+pluginBundle {
+  website = 'http://cinchapi.com'
+  vcsUrl = 'https://github.com/cinchapi/jarsh'
+  description = 'A gradle plugin that generates an executable shell script that embeds a runnable application jar with all of its dependencies.'
 
-task sourcesJar(type: Jar, dependsOn: classes) {
-    classifier = 'sources'
-    from sourceSets.main.allSource
-}
-
-task javadocJar(type: Jar, dependsOn: javadoc) {
-    classifier = 'javadoc'
-    from javadoc.destinationDir
-}
-
-artifacts {
-    archives sourcesJar
-    archives javadocJar
-}
-
-group = 'org.cinchapi'
-version = 0.1
-
-signing {
-    required { gradle.taskGraph.hasTask("uploadArchives") }
-    sign configurations.archives
-}
-
-def getMaven = { ->
-    def stdout = new ByteArrayOutputStream()
-    exec {
-        commandLine 'cat', '.maven'
-        standardOutput = stdout
+  plugins {
+    jarsh {
+      id = 'org.cinchapi.jarsh'
+      displayName = 'Jarsh Plugin'
+      description = 'A gradle plugin that generates an executable shell script that embeds a runnable application jar with all of its dependencies.'
+      tags = ['java', 'fatjar', 'runnable jar', 'executable jar', 'bash']
+      version = 1.0
     }
-    return stdout.toString().trim()
+  }
 }
-
-project.ext.maven = getMaven()
-
-uploadArchives {
-    repositories {
-        mavenDeployer {
-            beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
-
-            repository(url: project.maven) {
-              authentication(userName: sonatypeUsername, password: sonatypePassword)
-            }
-
-            pom.version = '0.1'
-
-            pom.project {
-               name 'Jarsh'
-               packaging 'jar'
-               description 'A gradle plugin that generates an executable shell script that embeds a runnable application jar with all of its dependencies.'
-               url 'http://cinchapi.org/jarsh'
-
-               scm {
-                   url 'git@github.com:cinchapi/jarsh.git'
-                   connection 'git@github.com:cinchapi/jarsh.git'
-                   developerConnection 'git@github.com:cinchapi/jarsh.git'
-               }
-
-               licenses {
-                   license {
-                       name 'The MIT License'
-                       url 'http://opensource.org/licenses/MIT'
-                       distribution 'repo'
-                   }
-               }
-
-               developers {
-                   developer {
-                       id 'jnelson'
-                       name 'Jeff Nelson'
-                   }
-               }
-           }
-        }
-    }
-}
-

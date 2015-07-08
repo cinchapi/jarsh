@@ -25,6 +25,8 @@ dependencies {
     compile 'net.nisgits.gradle:gradle-executable-jar-plugin:1.7.0'
 }
 
+version = '1.0.0'
+
 pluginBundle {
   website = 'http://cinchapi.com'
   vcsUrl = 'https://github.com/cinchapi/jarsh'
@@ -36,7 +38,7 @@ pluginBundle {
       displayName = 'Jarsh Plugin'
       description = 'A gradle plugin that generates an executable shell script that embeds a runnable application jar with all of its dependencies.'
       tags = ['java', 'fatjar', 'runnable jar', 'executable jar', 'bash']
-      version = 1.0
+      version = '1.0.0'
     }
   }
 }

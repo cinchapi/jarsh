@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.cinchapi.gradle.jarsh;
+package org.cinchapi.jarsh;
 
 import java.io.File;
 import java.nio.file.Files;
@@ -29,10 +29,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import groovy.lang.Closure;
-
 import net.nisgits.gradle.executablejar.ExecutableJarPlugin;
 
-import org.cinchapi.gradle.util.TFiles;
+import org.cinchapi.util.TFiles;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.Task;

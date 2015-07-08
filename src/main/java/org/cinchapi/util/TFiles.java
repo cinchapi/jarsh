@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.cinchapi.gradle.util;
+package org.cinchapi.util;
 
 import java.io.File;
 import java.io.FileInputStream;

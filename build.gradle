@@ -44,7 +44,7 @@ dependencies {
     compile 'net.nisgits.gradle:gradle-executable-jar-plugin:1.7.0'
 }
 
-version = '1.0.0'
+version = '1.1.0'
 
 pluginBundle {
   website = 'http://cinchapi.com'

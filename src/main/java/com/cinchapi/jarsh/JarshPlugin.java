@@ -35,6 +35,7 @@ import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.gradle.api.plugins.BasePlugin;
+import org.gradle.api.provider.Property;
 
 import com.cinchapi.util.TFiles;
 
@@ -57,19 +58,24 @@ public class JarshPlugin implements Plugin<Project> {
 
         Task task = project.task(JARSH_TASK_NAME);
 
+        // Define an extension to capture configurable settings
+        JarshPluginExtension extension = project.getExtensions().create("jarsh",
+                JarshPluginExtension.class, project);
+
         // Define the task metadata
         task.setDescription("Generates an executable shell script "
                 + "with all the runtime dependencies embedded.");
         task.setGroup(BasePlugin.BUILD_GROUP);
         final Task executableJarTask = project
                 .getTasksByName(ExecutableJarPlugin.EXECUTABLE_JAR_TASK_NAME,
-                        false).iterator().next();
+                        false)
+                .iterator().next();
         task.dependsOn(executableJarTask);
 
-        final File outputDir = new File(project.getBuildDir() + File.separator
-                + "libs");
-        final File jarshFile = new File(outputDir + File.separator
-                + project.getName() + ".sh");
+        final File outputDir = new File(
+                project.getBuildDir() + File.separator + "libs");
+        final File jarshFile = new File(
+                outputDir + File.separator + extension.name);
         task.getOutputs().file(jarshFile);
 
         // Define the task logic
@@ -79,17 +85,17 @@ public class JarshPlugin implements Plugin<Project> {
 
             @Override
             public Void call() {
-                File runnableJarFile = executableJarTask.getOutputs()
-                        .getFiles().iterator().next();
+                File runnableJarFile = executableJarTask.getOutputs().getFiles()
+                        .iterator().next();
 
                 Path stubPath = Paths.get(outputDir.getAbsolutePath()
                         + File.separator + "stub.sh");
                 try {
                     Files.copy(this.getClass().getResourceAsStream("/stub.sh"),
                             stubPath);
-                    TFiles.cat(jarshFile.getAbsolutePath(), stubPath.toFile()
-                            .getAbsolutePath(), runnableJarFile
-                            .getAbsolutePath());
+                    TFiles.cat(jarshFile.getAbsolutePath(),
+                            stubPath.toFile().getAbsolutePath(),
+                            runnableJarFile.getAbsolutePath());
                     Files.delete(stubPath);
                     jarshFile.setExecutable(true);
                 }
@@ -100,6 +106,17 @@ public class JarshPlugin implements Plugin<Project> {
             }
 
         });
+
+    }
+
+    class JarshPluginExtension {
+
+        final Property<String> name;
+
+        public JarshPluginExtension(Project project) {
+            name = project.getObjects().property(String.class);
+            name.set(project.getName() + ".sh");
+        }
 
     }
 }

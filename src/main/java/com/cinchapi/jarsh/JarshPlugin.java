@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  * 
- * Copyright (c) 2014 Jeff Nelson, Cinchapi Software Collective
+ * Copyright (c) 2018 Cinchapi Inc.
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.cinchapi.jarsh;
+package com.cinchapi.jarsh;
 
 import java.io.File;
 import java.nio.file.Files;
@@ -31,11 +31,12 @@ import java.nio.file.Paths;
 import groovy.lang.Closure;
 import net.nisgits.gradle.executablejar.ExecutableJarPlugin;
 
-import org.cinchapi.util.TFiles;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.gradle.api.plugins.BasePlugin;
+
+import com.cinchapi.util.TFiles;
 
 /**
  * The {@link JarshPlugin} builds on the {@link ExecutableJarPlugin} to build an

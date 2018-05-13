@@ -53,11 +53,11 @@ pluginBundle {
 
   plugins {
     jarsh {
-      id = 'org.cinchapi.jarsh'
+      id = 'com.cinchapi.jarsh'
       displayName = 'Jarsh Plugin'
       description = 'A gradle plugin that generates an executable shell script that embeds a runnable application jar with all of its dependencies.'
       tags = ['java', 'fatjar', 'runnable jar', 'executable jar', 'bash']
-      version = '1.0.0'
+      version = '1.1.0'
     }
   }
 }

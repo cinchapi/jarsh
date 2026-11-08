@@ -13,51 +13,68 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-task wrapper(type: Wrapper) {
-    gradleVersion = '4.7'
+plugins {
+    id 'java-gradle-plugin'
+    id 'eclipse'
+    id 'com.gradle.plugin-publish' version '2.2.1'
 }
 
-buildscript {
-  repositories {
-    maven {
-      url "https://plugins.gradle.org/m2/"
-    }
-  }
-  dependencies {
-    classpath "com.gradle.publish:plugin-publish-plugin:0.9.10"
-  }
-}
-
-apply plugin: 'java'
-apply plugin: 'eclipse'
-apply plugin: 'maven'
-apply plugin: 'signing'
-apply plugin: "com.gradle.plugin-publish"
+group = 'com.cinchapi'
+version = '2.0.0'
 
 repositories {
-   jcenter()
+    mavenCentral()
+}
+
+sourceSets {
+    functionalTest
+}
+
+configurations {
+    functionalTestImplementation.extendsFrom testImplementation
 }
 
 dependencies {
-    compile gradleApi()
-    compile localGroovy()
-    compile 'net.nisgits.gradle:gradle-executable-jar-plugin:1.7.0'
+    testImplementation 'junit:junit:4.13.2'
 }
 
-version = '1.1.1'
+// The plugin runs inside the build that applies it, and Gradle 8 runs on Java
+// 8, so the plugin's classes target Java 8. The tests run only here, on the
+// daemon's JDK.
+tasks.named('compileJava') {
+    options.release = 8
+}
 
-pluginBundle {
-  website = 'http://cinchapi.com'
-  vcsUrl = 'https://github.com/cinchapi/jarsh'
-  description = 'A gradle plugin that generates an executable shell script that embeds a runnable application jar with all of its dependencies.'
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+}
 
-  plugins {
-    jarsh {
-      id = 'com.cinchapi.jarsh'
-      displayName = 'Jarsh Plugin'
-      description = 'A gradle plugin that generates an executable shell script that embeds a runnable application jar with all of its dependencies.'
-      tags = ['java', 'fatjar', 'runnable jar', 'executable jar', 'bash']
-      version = '1.1.1'
+def functionalTest = tasks.register('functionalTest', Test) {
+    description = 'Runs the functional tests, which build sample projects ' +
+        'with the plugin and run their binaries.'
+    group = 'verification'
+    testClassesDirs = sourceSets.functionalTest.output.classesDirs
+    classpath = sourceSets.functionalTest.runtimeClasspath
+}
+
+tasks.named('check') {
+    dependsOn functionalTest
+}
+
+gradlePlugin {
+    website = 'https://github.com/cinchapi/jarsh'
+    vcsUrl = 'https://github.com/cinchapi/jarsh'
+    plugins {
+        jarsh {
+            id = 'com.cinchapi.jarsh'
+            implementationClass = 'com.cinchapi.jarsh.JarshPlugin'
+            displayName = 'Jarsh'
+            description = 'Builds a Java application into one executable ' +
+                'shell script that carries the application and all of its ' +
+                'dependencies.'
+            tags = ['java', 'fatjar', 'executable jar', 'shell script',
+                    'binary']
+        }
     }
-  }
+    testSourceSets sourceSets.functionalTest
 }
